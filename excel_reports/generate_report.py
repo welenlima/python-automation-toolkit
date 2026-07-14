@@ -1,40 +1,52 @@
 import pandas as pd
 
 
-def create_report():
+def create_report(input_file, output_file):
 
-    data = {
-        "Produto": [
-            "Notebook",
-            "Mouse",
-            "Teclado",
-            "Monitor"
-        ],
-        "Quantidade": [
-            5,
-            10,
-            8,
-            3
-        ],
-        "Valor": [
-            3500,
-            80,
-            150,
-            900
-        ]
+    # Ler dados de vendas
+    df = pd.read_csv(input_file)
+
+    # Criar coluna de faturamento
+    df["Faturamento"] = (
+        df["Quantidade"] * df["Valor"]
+    )
+
+    # Criar resumo
+    summary = {
+        "Total de vendas": len(df),
+        "Faturamento total": df["Faturamento"].sum(),
+        "Produto mais vendido": (
+            df.groupby("Produto")["Quantidade"]
+            .sum()
+            .idxmax()
+        )
     }
 
-    df = pd.DataFrame(data)
-
-    df["Total"] = df["Quantidade"] * df["Valor"]
-
-    df.to_excel(
-        "relatorio_vendas.xlsx",
-        index=False
+    # Transformar resumo em tabela
+    summary_df = pd.DataFrame(
+        [summary]
     )
+
+    # Exportar relatório Excel
+    with pd.ExcelWriter(output_file) as writer:
+        df.to_excel(
+            writer,
+            sheet_name="Vendas",
+            index=False
+        )
+
+        summary_df.to_excel(
+            writer,
+            sheet_name="Resumo",
+            index=False
+        )
 
     print("Relatório criado com sucesso!")
 
 
 if __name__ == "__main__":
-    create_report()
+
+    create_report(
+        "vendas.csv",
+        "relatorio_vendas.xlsx"
+    )
