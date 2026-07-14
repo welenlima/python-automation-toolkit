@@ -16,4 +16,9 @@ produtividade e reduzir tarefas manuais.
 - Requests
 - Automação de arquivos
 
-## 📂 Estrutura do projeto
+## ▶️ Como executar
+
+Clone o projeto:
+
+```bash
+git clone https://github.com/welenlima/python-automation-toolkit.git
