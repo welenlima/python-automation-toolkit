@@ -1,28 +1,49 @@
-import os
+from pathlib import Path
 import shutil
 
 
-def organize_folder(folder):
+def organize_files(folder):
 
-    for filename in os.listdir(folder):
+    folder = Path(folder)
 
-        file_path = os.path.join(folder, filename)
+    if not folder.exists():
+        print("Pasta não encontrada.")
+        return
 
-        if os.path.isfile(file_path):
+    extensions = {
+        ".pdf": "PDFs",
+        ".jpg": "Imagens",
+        ".png": "Imagens",
+        ".xlsx": "Planilhas",
+        ".csv": "Dados",
+        ".txt": "Textos"
+    }
 
-            extension = filename.split(".")[-1]
+    for file in folder.iterdir():
 
-            destination = os.path.join(folder, extension)
+        if file.is_file():
 
-            os.makedirs(destination, exist_ok=True)
+            folder_name = extensions.get(
+                file.suffix.lower(),
+                "Outros"
+            )
 
-            shutil.move(file_path, destination)
+            destination = folder / folder_name
+
+            destination.mkdir(exist_ok=True)
+
+            shutil.move(
+                str(file),
+                str(destination / file.name)
+            )
+
+            print(f"Movido: {file.name}")
 
 
 if __name__ == "__main__":
 
-    folder = input("Digite o caminho da pasta: ")
+    path = input(
+        "Digite o caminho da pasta: "
+    )
 
-    organize_folder(folder)
-
-    print("Arquivos organizados com sucesso!")
+    organize_files(path)
